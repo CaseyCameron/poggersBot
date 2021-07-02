@@ -1,0 +1,16 @@
+{
+  "name": "poggersbot",
+  "version": "1.0.0",
+  "description": "A bot that tallies whenever 'poggers' is posted in a discord guild",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sharp Eleven",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
+    "eslint": "^7.29.0"
+  }
+}
