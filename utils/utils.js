@@ -43,6 +43,5 @@ async function updateUser(message, nickname, userToUpdate, pogCount) {
   return `Pogs: ${pogCount}. | ${username}'s all-time Pogs: ${updatedPogCount.pogs}.`;
 }
 
-
 //cSpell: ignore poggers, pogs
 module.exports = { countPogs, createUser, updateUser };

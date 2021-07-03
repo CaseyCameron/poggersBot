@@ -27,7 +27,7 @@ client.on('message', async (message) => {
       pogCount = 0;
     }
   }
-
 });
+
 //cSpell: ignore poggers, pogs
 client.login(TOKEN);
