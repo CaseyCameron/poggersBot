@@ -1,12 +1,17 @@
+const { PREFIX } = require('../config.json');
+const { Sequelize } = require('sequelize');
 const User = require('../models/User.js');
 
 function countPogs(message) {
   let pogCount = 0;
 
-  const matchingTerms = message.toLowerCase().split(' ');
-  let matches = matchingTerms.filter(word => word.includes('pog'));
-  matches.forEach(match => {
-    pogCount += 1
+  const lowercaseTerms = message.toLowerCase().split(' ');
+  const matchingTerms = lowercaseTerms.filter(word => word !== `${PREFIX}pogcount`);
+  matchingTerms.map(word => {
+    if (word !== `${PREFIX}pogcount`) {
+      if (word.includes('pog')) pogCount += 1;
+      if (word.includes('pawg')) pogCount += 1;
+    };
   });
   return pogCount;
 }
@@ -43,5 +48,14 @@ async function updateUser(message, nickname, userToUpdate, pogCount) {
   return `Pogs: ${pogCount}. | ${username}'s all-time Pogs: ${updatedPogCount.pogs}.`;
 }
 
+async function findHighestPogCount() {
+  const highestNumOfPogs = await User.findAll({
+    attributes: ['username', [Sequelize.fn('max', Sequelize.col('pogs')), 'maxPogs']],
+    raw: true,
+  });
+  console.log(highestNumOfPogs[0]);
+  return highestNumOfPogs[0];
+}
+
 //cSpell: ignore poggers, pogs
-module.exports = { countPogs, createUser, updateUser };
+module.exports = { countPogs, createUser, updateUser, findHighestPogCount };
