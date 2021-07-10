@@ -61,9 +61,13 @@ async function findHighestPogCount() {
 
 async function findUserPogCount(message, nickname) {
   const userPogs = await User.findByPk(message.author.id);
-  const username = checkForNickname(nickname, message);
-  console.log(`${username}'s all-time Pogs: ${userPogs.pogs}.`);
-  return `You have ${userPogs.pogs} pogs.`;
+  if (userPogs === null) {
+    return message.channel.send('You have no pogs. That\'s great!');
+  } else {
+    const username = checkForNickname(nickname, message);
+    console.log(`${username}'s all-time Pogs: ${userPogs.pogs}.`);
+    return `You have ${userPogs.pogs} pogs.`;
+  }
 }
 
 //cSpell: ignore poggers, pogs, pogcount, mostpogs, mypogs
