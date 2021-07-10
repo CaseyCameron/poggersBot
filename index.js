@@ -1,9 +1,12 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { Sequelize } = require('sequelize');
 
 const { TOKEN, PREFIX } = require('./config.json');
-const { countPogs, createUser, updateUser, findHighestPogCount } = require('./utils/utils.js');
+const { countPogs,
+  createUser,
+  updateUser,
+  findHighestPogCount,
+  findUserPogCount } = require('./utils/utils.js');
 const User = require('./models/User.js');
 
 User.sync();
@@ -29,12 +32,18 @@ client.on('message', async (message) => {
   }
 });
 
-client.on(`message`, async (message) => {
-  if (message.content === `${PREFIX}pogcount`) {
+client.on('message', async (message) => {
+  if (message.content === `${PREFIX}mostpogs`) {
     const user = (await findHighestPogCount());
-    message.channel.send(`${user.username} has the most pogs with ${user.maxPogs}. Perhaps ${user.username} should sophisticate their vernacular.`);
+    message.channel.send(`${user.username} has the most pogs with ${user.maxPogs}. ${user.username} must really like pogs.`);
   }
 });
 
-//cSpell: ignore poggers, pogs
+client.on('message', async (message) => {
+  if (message.content === `${PREFIX}mypogs`) {
+    message.channel.send(await findUserPogCount(message, message.member.nickname));
+  }
+});
+
+//cSpell: ignore poggers, pogs, pogcount, mostpogs, mypogs
 client.login(TOKEN);

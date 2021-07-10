@@ -5,10 +5,12 @@ const User = require('../models/User.js');
 function countPogs(message) {
   let pogCount = 0;
 
-  const lowercaseTerms = message.toLowerCase().split(' ');
-  const matchingTerms = lowercaseTerms.filter(word => word !== `${PREFIX}pogcount`);
+  const matchingTerms = message.toLowerCase().split(' ');
   matchingTerms.map(word => {
-    if (word !== `${PREFIX}pogcount`) {
+    if (
+      word !== `${PREFIX}mypogs`
+      && word !== `${PREFIX}mostpogs`
+    ) {
       if (word.includes('pog')) pogCount += 1;
       if (word.includes('pawg')) pogCount += 1;
     };
@@ -42,7 +44,7 @@ async function updateUser(message, nickname, userToUpdate, pogCount) {
       discordId: message.author.id
     },
   });
-  const updatedPogCount = await User.findByPk(message.author.id)
+  const updatedPogCount = await User.findByPk(message.author.id);
   const username = checkForNickname(nickname, message);
   console.log(`Pogs: ${pogCount}. | ${username}'s all-time Pogs: ${updatedPogCount.pogs}.`);
   return `Pogs: ${pogCount}. | ${username}'s all-time Pogs: ${updatedPogCount.pogs}.`;
@@ -50,12 +52,19 @@ async function updateUser(message, nickname, userToUpdate, pogCount) {
 
 async function findHighestPogCount() {
   const highestNumOfPogs = await User.findAll({
-    attributes: ['username', [Sequelize.fn('max', Sequelize.col('pogs')), 'maxPogs']],
+    attributes: ['username', 'discordId', [Sequelize.fn('max', Sequelize.col('pogs')), 'maxPogs']],
     raw: true,
   });
   console.log(highestNumOfPogs[0]);
   return highestNumOfPogs[0];
 }
 
-//cSpell: ignore poggers, pogs
-module.exports = { countPogs, createUser, updateUser, findHighestPogCount };
+async function findUserPogCount(message, nickname) {
+  const userPogs = await User.findByPk(message.author.id);
+  const username = checkForNickname(nickname, message);
+  console.log(`${username}'s all-time Pogs: ${userPogs.pogs}.`);
+  return `You have ${userPogs.pogs} pogs.`;
+}
+
+//cSpell: ignore poggers, pogs, pogcount, mostpogs, mypogs
+module.exports = { countPogs, createUser, updateUser, findHighestPogCount, findUserPogCount };
